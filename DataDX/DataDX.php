@@ -31,10 +31,12 @@ class DataDX extends \PDO
             $options = array(
                 self::ATTR_ERRMODE => self::ERRMODE_EXCEPTION
             );
-            $this->dbh = parent::__construct($dsn, $dbUser, $dbPass, $options);
-            foreach (['Driver', 'Host', 'User', 'Pass', 'Name'] as $param) {
-                $this->db{$param} = ${"db{$param}"};
-            }
+            parent::__construct($dsn, $dbUser, $dbPass, $options);
+            $this->dbDriver = $dbDriver;
+            $this->dbHost   = $dbHost;
+            $this->dbUser   = $dbUser;
+            $this->dbPass   = $dbPass;
+            $this->dbName   = $dbName;
         } catch (\PDOException $e) {
             die($e->getMessage());
         }
