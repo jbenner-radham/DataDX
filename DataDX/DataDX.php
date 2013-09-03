@@ -71,10 +71,27 @@ class DataDX extends \PDO
     }
 
     /**
+     * @param array $src
+     *
+     * @return string
+     */
+    public static function identifierQuoteArrayToStr(array $src)
+    {
+        $dest = [];
+
+        // MySQL variant.
+        foreach ($src as $item) {
+            $dest[] = "`{$item}`";
+        }
+
+        return implode(', ', $dest);
+    }
+
+    /**
      * @return void
      */
     public function close()
     {
         $this->dbh = null;
     }
-} 
+}
