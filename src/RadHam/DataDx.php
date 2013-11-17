@@ -127,7 +127,7 @@ class DataDx extends \PDO
             $identifier = "`{$identifier}`";
         }
 
-        return implode(', ', $dest);
+        return implode(', ', $identifiers);
     }
 
     /**
