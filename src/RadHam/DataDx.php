@@ -4,39 +4,38 @@ namespace RadHam;
 
 class DataDx extends \PDO
 {
-  
-    protected $dbDriver,
-              $dbHost,
-              $dbName,
-              $dbUser,
-              $dbPass,
-              $dbh;
+    protected $db_driver,
+              $db_host,
+              $db_name,
+              $db_user,
+              $db_pass,
+              $db_handle;
 
     /**
-     * @param string $dbDriver
-     * @param string $dbHost
-     * @param string $dbUser
-     * @param string $dbPass
-     * @param bool $dbName
+     * @param string $db_driver
+     * @param string $db_host
+     * @param string $db_user
+     * @param string $db_pass
+     * @param bool $db_name
      *
      * @return DataDX
      */
-    public function __construct($dbDriver, $dbHost, $dbUser, $dbPass, $dbName = false)
+    public function __construct($db_driver, $db_host, $db_user, $db_pass, $db_name = false)
     {
         try {
-            $dsn = "{$dbDriver}:host={$dbHost}";
-            if ($dbName) {
-                $dsn .= ";dbname={$dbName}";
+            $dsn = "{$db_driver}:host={$db_host}";
+            if ($db_name) {
+                $dsn .= ";db_name={$db_name}";
             }
             $options = array(
                 self::ATTR_ERRMODE => self::ERRMODE_EXCEPTION
             );
-            parent::__construct($dsn, $dbUser, $dbPass, $options);
-            $this->dbDriver = $dbDriver;
-            $this->dbHost   = $dbHost;
-            $this->dbUser   = $dbUser;
-            $this->dbPass   = $dbPass;
-            $this->dbName   = $dbName;
+            parent::__construct($dsn, $db_user, $db_pass, $options);
+            $this->db_driver = $db_driver;
+            $this->db_host   = $db_host;
+            $this->db_user   = $db_user;
+            $this->db_pass   = $db_pass;
+            $this->db_name   = $db_name;
         } catch (\PDOException $e) {
             die($e->getMessage());
         }
@@ -51,30 +50,47 @@ class DataDx extends \PDO
      */
     public function get($sql = false)
     {
-        return $this->query($sql)->fetchAll(self::FETCH_ASSOC);
+        $rows = $this->query($sql)->fetchAll(self::FETCH_ASSOC);
+        if (count($rows) === 0) {
+            return false;
+        }
+
+        return $rows;
     }
 
     /**
      * @param $table
      * @todo Call the "get" methods via a magic method and secondary class?
-     * 
+     *
      * @return mixed
      */
     public function getColNames($table)
     {
-        $database = $this->dbName;
-
         $sql = "SELECT `COLUMN_NAME`
                 FROM `information_schema`.`COLUMNS`
-                WHERE `TABLE_SCHEMA` = '{$database}' 
-                  AND `TABLE_NAME`   = '{$table}'";
+                WHERE `TABLE_SCHEMA` = '{$database}'
+                  AND `TABLE_NAME`   = '{$this->db_name}'";
 
         return $this->query($sql)
                     ->fetchAll(self::FETCH_COLUMN);
     }
 
     /**
+     * Returns the results of a provided SQL query and returns the result as
+     * JSON.
+     *
+     * @param  string     $query SQL query string.
+     *
+     * @return array|bool        JSON encoded array or results or Boolean false.
+     */
+    public function getJson($query)
+    {
+        return $this->get($query);
+    }
+
+    /**
      * [getTableNames description]
+     *
      * @return array|boolean [description]
      */
     public function getTableNames()
@@ -84,7 +100,7 @@ class DataDx extends \PDO
              FROM `information_schema`.`TABLES` 
              WHERE `TABLE_TYPE`   = "BASE TABLE" 
                AND `table_schema` = "%s"',
-                 $this->dbName
+                 $this->db_name
         );
 
         return $this->query($sql)
@@ -109,10 +125,12 @@ class DataDx extends \PDO
     }
 
     /**
+     * Closes the database handle.
+     *
      * @return void
      */
     public function close()
     {
-        $this->dbh = null;
+        $this->db_handle = null;
     }
 }

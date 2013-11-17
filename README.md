@@ -4,6 +4,8 @@ DataDX
 RadHam DataDX is the pseudo-sequel to PDOConn OMG! Long story short... it's a PDO helper class to make data access easy.
 Currently it's an incomplete mess but I'll get it caught up here someday... (Hopefully sooner than later.)
 
+Coded in compliance with PSR-2: http://github.com/php-fig/fig-standards/blob/master/accepted/PSR-2-coding-style-guide.md
+
 A Quick And Dirty Example
 -------------------------
 

@@ -1,8 +1,8 @@
 {
     "name": "radham/datadx",
     "description": "The pseudo-sequel to PDOConn, the revengening!",
-    "version": "0.1.0",
-    "time": "2013-11-17",
+    "version": "0.2.0",
+    "time": "2013-11-xx",
     "license": "MIT",
     "minimum-stability": "dev",
     "authors": [
