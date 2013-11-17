@@ -2,7 +2,7 @@
     "name": "radham/datadx",
     "description": "The pseudo-sequel to PDOConn, the revengening!",
     "license": "MIT",
-    "minimum-stability": "stable",
+    "minimum-stability": "dev",
     "authors": [
         {
             "name": "James Benner",
