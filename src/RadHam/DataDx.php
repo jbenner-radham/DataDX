@@ -68,8 +68,8 @@ class DataDx extends \PDO
     {
         $sql = "SELECT `COLUMN_NAME`
                 FROM `information_schema`.`COLUMNS`
-                WHERE `TABLE_SCHEMA` = '{$database}'
-                  AND `TABLE_NAME`   = '{$this->db_name}'";
+                WHERE `TABLE_SCHEMA` = '{$this->db_name}'
+                  AND `TABLE_NAME`   = '{$table}'";
 
         return $this->query($sql)
                     ->fetchAll(self::FETCH_COLUMN);
