@@ -1,8 +1,10 @@
 {
     "name": "radham/datadx",
     "description": "The pseudo-sequel to PDOConn, the revengening!",
+    "version": "0.1.0",
+    "time": "2013-11-17",
     "license": "MIT",
-    "minimum-stability": "stable",
+    "minimum-stability": "dev",
     "authors": [
         {
             "name": "James Benner",
@@ -10,11 +12,13 @@
         }
     ],
     "require": {
-        "php": ">=5.3.0"
+        "php": ">=5.4.0",
+        "ext-PDO": "*",
+        "ext-pdo_mysql": "*"
     },
     "autoload": {
         "psr-0" : {
-            "RadHam\\" : "DataDX/"
+            "RadHam\\" : "src/"
         }
     }
 }
