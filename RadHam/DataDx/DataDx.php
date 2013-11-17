@@ -2,7 +2,7 @@
 
 namespace RadHam;
 
-class DataDX extends \PDO
+class DataDx extends \PDO
 {
   
     protected $dbDriver,
@@ -56,18 +56,39 @@ class DataDX extends \PDO
 
     /**
      * @param $table
-     *
+     * @todo Call the "get" methods via a magic method and secondary class?
+     * 
      * @return mixed
      */
     public function getColNames($table)
     {
         $database = $this->dbName;
+
         $sql = "SELECT `COLUMN_NAME`
                 FROM `information_schema`.`COLUMNS`
-                WHERE `TABLE_SCHEMA` = '{$database}'
-                    AND `TABLE_NAME` = '{$table}'";
+                WHERE `TABLE_SCHEMA` = '{$database}' 
+                  AND `TABLE_NAME`   = '{$table}'";
 
-        return $this->query($sql)->fetchAll(self::FETCH_COLUMN);
+        return $this->query($sql)
+                    ->fetchAll(self::FETCH_COLUMN);
+    }
+
+    /**
+     * [getTableNames description]
+     * @return array|boolean [description]
+     */
+    public function getTableNames()
+    {
+        $sql = sprintf(
+            'SELECT `table_name` 
+             FROM `information_schema`.`TABLES` 
+             WHERE `TABLE_TYPE`   = "BASE TABLE" 
+               AND `table_schema` = "%s"',
+                 $this->dbName
+        );
+
+        return $this->query($sql)
+                    ->fetchAll(self::FETCH_COLUMN);
     }
 
     /**
