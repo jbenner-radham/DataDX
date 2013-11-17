@@ -95,13 +95,10 @@ class DataDx extends \PDO
      */
     public function getTableNames()
     {
-        $sql = sprintf(
-            'SELECT `table_name` 
-             FROM `information_schema`.`TABLES` 
-             WHERE `TABLE_TYPE`   = "BASE TABLE" 
-               AND `table_schema` = "%s"',
-                 $this->db_name
-        );
+        $sql = "SELECT `table_name`
+                FROM `information_schema`.`TABLES`
+                WHERE `TABLE_TYPE`   = 'BASE TABLE'
+                  AND `table_schema` = '{$this->db_name}'";
 
         return $this->query($sql)
                     ->fetchAll(self::FETCH_COLUMN);
