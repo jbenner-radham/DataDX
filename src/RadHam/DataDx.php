@@ -16,9 +16,9 @@ class DataDx extends \PDO
      * @param string $db_host
      * @param string $db_user
      * @param string $db_pass
-     * @param bool $db_name
+     * @param bool   $db_name
      *
-     * @return DataDX
+     * @return DataDx
      */
     public function __construct($db_driver, $db_host, $db_user, $db_pass, $db_name = false)
     {
@@ -79,9 +79,9 @@ class DataDx extends \PDO
      * Returns the results of a provided SQL query and returns the result as
      * JSON.
      *
-     * @param  string     $query SQL query string.
+     * @param string $query SQL query string.
      *
-     * @return array|bool        JSON encoded array or results or Boolean false.
+     * @return array|bool JSON encoded array or results or Boolean false.
      */
     public function getJson($query)
     {
@@ -108,17 +108,23 @@ class DataDx extends \PDO
     }
 
     /**
-     * @param array $src
+     * @param array|string $identifiers
+     * @todo Make this compatible with other DB types.
      *
      * @return string
      */
-    public static function identifierQuoteArrayToStr(array $src)
+    public static function quoteIdentifiers($identifiers)
     {
-        $dest = [];
-
-        // MySQL variant.
-        foreach ($src as $item) {
-            $dest[] = "`{$item}`";
+        /**
+         * If the $identifiers argv is a string cast it into an array 
+         * for processing.
+         */
+        if (is_string($identifiers)) {
+            $identifiers = [$identifiers];
+        }
+        // MySQL/MariaDB variant.
+        foreach ($identifiers as &$identifier) {
+            $identifier = "`{$identifier}`";
         }
 
         return implode(', ', $dest);
