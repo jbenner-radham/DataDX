@@ -85,7 +85,7 @@ class DataDx extends \PDO
      */
     public function getJson($query)
     {
-        return $this->get($query);
+        return $this->get(json_encode($query));
     }
 
     /**
