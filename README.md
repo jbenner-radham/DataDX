@@ -18,17 +18,27 @@ require 'vendor/autoload.php';
 // Instantiate the object; for great justice!
 $dx = new RadHam\DataDx('mysql', '127.0.0.1', 'username', 'password', 'database_name');
 
-print_r(
+// Returns an array of the DB's table names.
+$dx->getTableNames();
 
-  // Returns an array of the DB's table names.
-  $dx->getTableNames()
-);
+// Returns an array of the queried table's column names.
+$dx->getColNames('table_name');
 
-print_r(
-  
-  // Returns an array of the queried table's column names.
-  $dx->getColNames('table_name')
-);
+// Returns a comma separated string with the identifiers quoted in 
+// the DB specific syntax. 
+$dx->quoteIdentifiers(['hello', 'world']);
+// For MySQL/MariaDB this would return:
+#>> `hello`, `world`
+
+// You can also pass a single argument as a string...
+$dx->quoteIdentifiers('ohhai');
+#>> `ohhai`
+
+// Fetch your query as JSON (because JSON is awesome, duh!)
+$dx->getJson('SELECT * FROM `db_name`.`db_table`');
+
+// Or just fetch it as a plain Jane associative array.
+$dx->get('SELECT * FROM `db_name`.`db_table`');
 
 // Close the DB connection.
 $dx->close();
