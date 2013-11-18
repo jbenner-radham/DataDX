@@ -73,6 +73,7 @@ class DataDx extends \PDO
 
     /**
      * [getColumn description]
+     * 
      * @param  [type] $sql [description]
      * @return [type]      [description]
      */
