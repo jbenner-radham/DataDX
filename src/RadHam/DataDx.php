@@ -8,8 +8,7 @@ class DataDx extends \PDO
               $db_host,
               $db_name,
               $db_user,
-              $db_pass,
-              $db_handle;
+              $db_pass;
 
     /**
      * @param string $db_driver
@@ -22,20 +21,21 @@ class DataDx extends \PDO
      */
     public function __construct($db_driver, $db_host, $db_user, $db_pass, $db_name = false)
     {
+        $dsn = "{$db_driver}:host={$db_host}";
+        if ($db_name) {
+            $dsn .= ";dbname={$db_name}";
+        }
+        $db_options = [
+            self::ATTR_ERRMODE => self::ERRMODE_EXCEPTION
+        ];
+        $this->db_driver = $db_driver;
+        $this->db_host   = $db_host;
+        $this->db_user   = $db_user;
+        $this->db_pass   = $db_pass;
+        $this->db_name   = $db_name;
+
         try {
-            $dsn = "{$db_driver}:host={$db_host}";
-            if ($db_name) {
-                $dsn .= ";db_name={$db_name}";
-            }
-            $options = array(
-                self::ATTR_ERRMODE => self::ERRMODE_EXCEPTION
-            );
-            parent::__construct($dsn, $db_user, $db_pass, $options);
-            $this->db_driver = $db_driver;
-            $this->db_host   = $db_host;
-            $this->db_user   = $db_user;
-            $this->db_pass   = $db_pass;
-            $this->db_name   = $db_name;
+            parent::__construct($dsn, $db_user, $db_pass, $db_options);
         } catch (\PDOException $e) {
             die($e->getMessage());
         }
@@ -50,12 +50,20 @@ class DataDx extends \PDO
      */
     public function get($sql = false)
     {
-        $rows = $this->query($sql)->fetchAll(self::FETCH_ASSOC);
+
+        $rows = $this->query($sql)
+                     ->fetchAll(self::FETCH_ASSOC);
         if (count($rows) === 0) {
             return false;
         }
 
         return $rows;
+    }
+
+    public function getColumn($sql)
+    {
+        return $this->query($sql)
+                    ->fetchAll(self::FETCH_COLUMN);
     }
 
     /**
@@ -64,15 +72,14 @@ class DataDx extends \PDO
      *
      * @return mixed
      */
-    public function getColNames($table)
+    public function getColumnNames($table)
     {
         $sql = "SELECT `COLUMN_NAME`
                 FROM `information_schema`.`COLUMNS`
                 WHERE `TABLE_SCHEMA` = '{$this->db_name}'
                   AND `TABLE_NAME`   = '{$table}'";
 
-        return $this->query($sql)
-                    ->fetchAll(self::FETCH_COLUMN);
+        return $this->getColumn($sql);
     }
 
     /**
@@ -100,8 +107,16 @@ class DataDx extends \PDO
                 WHERE `TABLE_TYPE`   = 'BASE TABLE'
                   AND `table_schema` = '{$this->db_name}'";
 
-        return $this->query($sql)
-                    ->fetchAll(self::FETCH_COLUMN);
+        return $this->getColumn($sql);
+    }
+
+    public function preparedExecute($sql)
+    {
+        $stmt = self::prepare($sql);
+        $stmt->execute();
+        
+        // You cannot return $stmt->execute(); you must return $stmt seperately.
+        return $stmt;
     }
 
     /**
@@ -125,15 +140,5 @@ class DataDx extends \PDO
         }
 
         return implode(', ', $identifiers);
-    }
-
-    /**
-     * Closes the database handle.
-     *
-     * @return void
-     */
-    public function close()
-    {
-        $this->db_handle = null;
     }
 }
