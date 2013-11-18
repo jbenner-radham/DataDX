@@ -38,8 +38,8 @@ $dx->quoteIdentifiers('ohhai');
 $dx->getJson('SELECT * FROM `db_name`.`db_table`');
 
 // Or just fetch it as a plain Jane associative array.
-$dx->get('SELECT * FROM `db_name`.`db_table`');
+$dx->get('SELECT * FROM `db_table`');
 
 // Close the DB connection.
-$dx->close();
+$dx = null;
 ```

@@ -48,22 +48,37 @@ class DataDx extends \PDO
      *
      * @return array
      */
-    public function get($sql = false)
+    public function get($sql = false, $fetch_method = 'assoc')
     {
-
-        $rows = $this->query($sql)
-                     ->fetchAll(self::FETCH_ASSOC);
-        if (count($rows) === 0) {
-            return false;
+        // The numeric fetch values below are the values of the corresponding
+        // PDO::FETCH_[x] constants. 
+        // For reference see: http://php.net/manual/en/pdo.constants.php
+        switch ($fetch_method) {
+            case 'column':
+                $fetch_method = 7;
+                break;
+            
+            case 'assoc':
+                // no break
+            default:
+                $fetch_method = 2;
+                break;
         }
 
-        return $rows;
+        $rows = $this->query($sql)
+                     ->fetchAll($fetch_method);
+        
+        return count($rows) > 0 ? $rows : false;
     }
 
+    /**
+     * [getColumn description]
+     * @param  [type] $sql [description]
+     * @return [type]      [description]
+     */
     public function getColumn($sql)
     {
-        return $this->query($sql)
-                    ->fetchAll(self::FETCH_COLUMN);
+        return $this->get($sql, 'column');
     }
 
     /**
